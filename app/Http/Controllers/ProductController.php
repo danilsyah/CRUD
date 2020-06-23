@@ -14,22 +14,46 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        Product::create([
-            'product_name' => $request->product_name,
-            'price' => $request->price,
-            'stock' => $request->stock
-        ]);
+        // Product::create([
+        //     'product_name' => $request->product_name,
+        //     'price' => $request->price,
+        //     'stock' => $request->stock
+        // ]);
 
-        return back();
+        Product::create($request->all());
+        return redirect('/products');
+        // return back();
     }
 
     public function viewProduct()
     {
-        return view('products');
+        $products = Product::all();
+        return view('products', compact('products'));
     }
 
-    public function edit()
+    public function edit($id)
     {
-        return view('edit');
+        // $product = Product::where('id', $id)->first();
+        $product = Product::findOrFail($id);
+        return view('edit', compact('product'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Product::where('id', $id)->update([
+        //     'product_name' => $request->product_name,
+        //     'price' => $request->price,
+        //     'stock' => $request->stock
+        // ]);
+
+        Product::findOrFail($id)->update($request->all());
+
+        return redirect('/products');
+    }
+
+    public function delete($id)
+    {
+        Product::destroy($id);
+        return back();
     }
 }
